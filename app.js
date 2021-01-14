@@ -43,7 +43,7 @@ app.post("/user/signup",cors(), async(req, res) => {
     const token = await user.generateauthtoken()
     res.status(201).json({user, token})
   } catch(e){
-    res.status(400).send("Username / RegNo. already exists");
+    res.status(400).send("Username already exists");
   }
 });
 
@@ -84,9 +84,77 @@ app.post("/user/logoutall", auth, async(req, res)=> {
   }
 })
 
+//mainlink create
+app.post('/mainlink/:id',auth,(req,res)=>{
+	var mainlink = req.body.mainlink
+	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"mainlink": mainlink},
+						   function(err,result){
+		        if(err){
+            res.send(err)
+        }
+        else{
+            res.json(result);
+        }
+	})
+})
+
+
+
+
+//sublinks create
+app.post('/sublinks/:id',auth,(req,res)=>{
+	var sublinks = new sublinks({
+		name:req.body.name,
+		link:req.body.link
+	})
+	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"$push": {"sublinks":sublinks}},{"new": true, "upsert": true},
+						   function(err,result){
+		        if(err){
+            res.send(err)
+        }
+        else{
+            res.json(result);
+        }
+	})
+})
+
+//sublink count update
+app.post('/sublink/read/:id',auth,(req,res)=>{
+	  
+})
+//mainlink update
+app.post('/mainlink/update/:id',auth,(req,res)=>{
+	var mainlink = req.body.mainlink
+	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"mainlink": mainlink},
+						   function(err,result){
+		        if(err){
+            res.send(err)
+        }
+        else{
+            res.json(result);
+        }
+	})
+})
+
+//mainlink read
+app.get('/mainlink/:id',auth,(req,res)=>{
+	User.findByIdAndUpdate({"_id":req.params.id},{$inc:{countmainlink:1}},(err, result) => {
+    if (err) {
+      res.json({
+        status:400,
+        success:false,
+        message:err
+      })
+    }
+    else{	
+    res.json(result.manlink);
+    }
+  }) 
+})
+
 
 
 var port = process.env.PORT || 3000;
 app.listen(port, function(){
-	console.log("server started");
+	res.json("server started");
 });

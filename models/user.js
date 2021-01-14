@@ -7,6 +7,13 @@ const UserSchema = new mongoose.Schema({
     username: {type: String, unique: true,require:true},
     password: {type: String, require: true},
     email: {type: String, require:true},
+	mainlink:{type:String},
+	sublinks:[{
+		name:{type:string},
+		link:{type:string},
+		count:{type:Number,default:0}
+	}],
+	countmainlink:{type:Number,default:0},
     tokens: [{
         token :{
             type: String,
