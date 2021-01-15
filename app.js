@@ -85,7 +85,7 @@ app.post("/user/logoutall", auth, async(req, res)=> {
 })
 
 //mainlink create
-app.post('/mainlink/:id',auth,(req,res)=>{
+app.post('/mainlink/create/:id',auth,(req,res)=>{
 	var mainlink = req.body.mainlink
 	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"mainlink": mainlink},
 						   function(err,result){
@@ -101,13 +101,9 @@ app.post('/mainlink/:id',auth,(req,res)=>{
 
 
 
-//sublinks create
-app.post('/sublinks/:id',auth,(req,res)=>{
-	var sublinks = new sublinks({
-		name:req.body.name,
-		link:req.body.link
-	})
-	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"$push": {"sublinks":sublinks}},{"new": true, "upsert": true},
+//sublinks create 
+app.post('/sublinks/create/:id',(req,res)=>{
+	User.findByIdAndUpdate({"_id":req.params.id},{"$push": {"sublinks" : [ {"name" : req.body.name , "link" : req.body.link}]}},{"new": true, "upsert": true},
 						   function(err,result){
 		        if(err){
             res.send(err)
@@ -117,10 +113,56 @@ app.post('/sublinks/:id',auth,(req,res)=>{
         }
 	})
 })
-
+//main link read
+app.get('/mainlink/:id',auth,(req,res)=>{
+	User.findByID({"_id":req.params.id},function(err,result){
+		        if(err){
+            res.send(err)
+        }
+        else{
+            res.json(result);
+        }
+	})
+})
 //sublink count update
-app.post('/sublink/read/:id',auth,(req,res)=>{
-	  
+app.get('/sublink/count/:id',auth,(req,res)=>{
+	User.findOneAndUpdate({"sublinks._id":req.params.id}, {$inc:{"sublinks.$.count":1}},
+    (err, result) => {
+    if (err) {
+      res.json({
+        status:400,
+        success:false, 
+        message:err
+      })
+    }
+    else{	
+    res.json(result);
+    }
+  }) 
+})
+//sublink update
+app.post('/sublinks/update/:id',(req,res)=>{
+	User.findOneAndUpdate({"sublinks._id":req.params.id},{"$set": {"sublinks" : [ {"name" : req.body.name , "link" : req.body.link}]}},{"new": true, "upsert": true},
+						   function(err,result){
+		        if(err){
+            res.send(err)
+        }
+        else{
+            res.json(result);
+        }
+	})
+})
+//sublink delete
+app.post('/sublinks/update/:id',(req,res)=>{
+	User.findOneAndUpdate({"sublinks._id":req.params.id},{"$pull": {"sublinks" : {_id:req.params.id}}},{"new": true, "upsert": true},
+						   function(err,result){
+		        if(err){
+            res.send(err)
+        }
+        else{
+            res.json(result);
+        }
+	})
 })
 //mainlink update
 app.post('/mainlink/update/:id',auth,(req,res)=>{
@@ -136,7 +178,7 @@ app.post('/mainlink/update/:id',auth,(req,res)=>{
 	})
 })
 
-//mainlink read
+//mainlink count update 
 app.get('/mainlink/:id',auth,(req,res)=>{
 	User.findByIdAndUpdate({"_id":req.params.id},{$inc:{countmainlink:1}},(err, result) => {
     if (err) {
@@ -147,14 +189,14 @@ app.get('/mainlink/:id',auth,(req,res)=>{
       })
     }
     else{	
-    res.json(result.manlink);
+    res.json(result);
     }
   }) 
-})
+}) 
 
 
 
 var port = process.env.PORT || 3000;
 app.listen(port, function(){
-	res.json("server started");
+	console.log("server started");
 });

@@ -9,8 +9,8 @@ const UserSchema = new mongoose.Schema({
     email: {type: String, require:true},
 	mainlink:{type:String},
 	sublinks:[{
-		name:{type:string},
-		link:{type:string},
+		name:{type:String},
+		link:{type:String},
 		count:{type:Number,default:0}
 	}],
 	countmainlink:{type:Number,default:0},
