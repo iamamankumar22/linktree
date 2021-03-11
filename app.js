@@ -114,8 +114,8 @@ app.post('/sublinks/create/:id',(req,res)=>{
 	})
 })
 //main link read
-app.get('/mainlink/:id',auth,(req,res)=>{
-	User.findByID({"_id":req.params.id},function(err,result){
+app.get('/mainlink/:username',(req,res)=>{
+	User.find({"username":req.params.username},function(err,result){
 		        if(err){
             res.send(err)
         }
