@@ -142,7 +142,7 @@ app.get('/sublink/count/:id',auth,(req,res)=>{
 })
 //sublink update
 app.post('/sublinks/update/:id',(req,res)=>{
-	User.findOneAndUpdate({"sublinks._id":req.params.id},{"$set": {"sublinks" : [ {"name" : req.body.name , "link" : req.body.link}]}},{"new": true, "upsert": true},
+	User.findOneAndUpdate({"sublinks._id":req.params.id},{"$set": {"sublinks.$.name" :req.body.name , "sublinks.$.link" : req.body.link}},{"new": true, "upsert": true},
 						   function(err,result){
 		        if(err){
             res.send(err)
@@ -153,7 +153,7 @@ app.post('/sublinks/update/:id',(req,res)=>{
 	})
 })
 //sublink delete
-app.post('/sublinks/update/:id',(req,res)=>{
+app.post('/sublinks/delete/:id',(req,res)=>{
 	User.findOneAndUpdate({"sublinks._id":req.params.id},{"$pull": {"sublinks" : {_id:req.params.id}}},{"new": true, "upsert": true},
 						   function(err,result){
 		        if(err){
