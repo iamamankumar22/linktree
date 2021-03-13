@@ -153,7 +153,7 @@ app.post('/sublinks/update/:id',(req,res)=>{
 	})
 })
 //sublink delete
-app.post('/sublinks/delete/:id',(req,res)=>{
+app.get('/sublinks/delete/:id',(req,res)=>{
 	User.findOneAndUpdate({"sublinks._id":req.params.id},{"$pull": {"sublinks" : {_id:req.params.id}}},{"new": true, "upsert": true},
 						   function(err,result){
 		        if(err){
