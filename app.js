@@ -10,7 +10,8 @@ var passportLocalMongoose  = require('passport-local-mongoose');
 var bcrypt= require('bcrypt-nodejs');
 const { use } = require('passport');
 const jwt = require("jsonwebtoken");
-var cors = require('cors')
+var cors = require('cors');
+const schedule = require('node-schedule');
 /*********************************************************************************************************************************************************** */
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -125,7 +126,7 @@ app.get('/mainlink/:username',(req,res)=>{
 	})
 })
 //sublink count update
-app.get('/sublink/count/:id',auth,(req,res)=>{
+app.get('/sublink/countinc/:id',(req,res)=>{
 	User.findOneAndUpdate({"sublinks._id":req.params.id}, {$inc:{"sublinks.$.count":1}},
     (err, result) => {
     if (err) {
@@ -179,8 +180,8 @@ app.post('/mainlink/update/:id',auth,(req,res)=>{
 })
 
 //mainlink count update 
-app.get('/mainlink/:id',auth,(req,res)=>{
-	User.findByIdAndUpdate({"_id":req.params.id},{$inc:{countmainlink:1}},(err, result) => {
+app.get('/mainlink/countinc/:username',(req,res)=>{
+	User.findOneAndUpdate({"username":req.params.username},{$inc:{countmainlink:1}},(err, result) => {
     if (err) {
       res.json({
         status:400,
@@ -193,6 +194,10 @@ app.get('/mainlink/:id',auth,(req,res)=>{
     }
   }) 
 }) 
+
+schedule.scheduleJob('*/2 * * * * *',() =>{
+			  
+})
 
 
 
