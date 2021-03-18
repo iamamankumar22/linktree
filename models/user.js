@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema({
 		count:{type:Number,default:0}
 	}],
 	countmainlink:{type:Number,default:0},
+	dailycountmainlink:{type:Number,default:0},
     tokens: [{
         token :{
             type: String,
