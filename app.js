@@ -88,7 +88,7 @@ app.post("/user/logoutall", auth, async(req, res)=> {
 //mainlink create
 app.post('/mainlink/create/:id',auth,(req,res)=>{
 	var mainlink = req.body.mainlink
-	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"mainlink": mainlink},
+	User.findByIdAndUpdate({"_id":req.params.id},{"mainlink": mainlink},
 						   function(err,result){
 		        if(err){
             res.send(err)
@@ -168,7 +168,7 @@ app.get('/sublinks/delete/:id',(req,res)=>{
 //mainlink update
 app.post('/mainlink/update/:id',auth,(req,res)=>{
 	var mainlink = req.body.mainlink
-	User.findByIdAndUpdate({"_id":req.params.id},                                                      {"mainlink": mainlink},
+	User.findByIdAndUpdate({"_id":req.params.id},{"mainlink": mainlink},
 						   function(err,result){
 		        if(err){
             res.send(err)
@@ -181,7 +181,7 @@ app.post('/mainlink/update/:id',auth,(req,res)=>{
 
 //mainlink count update 
 app.get('/mainlink/countinc/:username',(req,res)=>{
-	User.findOneAndUpdate({"username":req.params.username},{$inc:{countmainlink:1}},(err, result) => {
+	User.findOneAndUpdate({"username":req.params.username},{$inc:{countmainlink:1,dailycountmainlink:1}},{"multi": true},(err, result) => {
     if (err) {
       res.json({
         status:400,
@@ -196,7 +196,7 @@ app.get('/mainlink/countinc/:username',(req,res)=>{
 }) 
 
 // Reset dailycountmainlink
-schedule.scheduleJob('00 00 12 * * 0-6',() =>{
+schedule.scheduleJob('0 0 * * * *',() =>{
   User.updateMany({},{$set:{"dailycountmainlink": 0}}, {"multi": true}, (err,res)=>{
     if (err) {
       res.json({
