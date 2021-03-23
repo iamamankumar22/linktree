@@ -197,7 +197,7 @@ app.get('/mainlink/countinc/:username',(req,res)=>{
 
 // Reset dailycountmainlink
 schedule.scheduleJob('0 0 * * * *',() =>{
-  User.updateMany({},{$set:{"dailycountmainlink": 0}}, {"multi": true}, (err,res)=>{
+  User.updateMany({},{$set:{"dailycountmainlink": 0}}, (err,res)=>{
     if (err) {
       res.json({
         status:400,
